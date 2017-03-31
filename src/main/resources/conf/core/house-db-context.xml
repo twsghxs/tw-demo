@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc 
+	http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-3.2.xsd " 
+    	>
+   
+	<context:annotation-config />
+	<!-- For parsing classes with @Aspect annotation  proxy-target-class=true-->
+	<aop:aspectj-autoproxy />
+
+	<context:property-placeholder  location="classpath:conf/custom/env/jdbc.properties" ignore-unresolvable="true" /> 
+	
+	
+	<beans:bean id="parentDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<beans:property name="initialSize" value="${parent.initialSize}"></beans:property>
+		<beans:property name="maxActive" value="${parent.maxActive}"></beans:property>
+		<beans:property name="maxIdle" value="${parent.maxIdle}"></beans:property>
+		<beans:property name="minIdle" value="${parent.minIdle}"></beans:property>
+		<beans:property name="logAbandoned" value="${parent.logAbandoned}"></beans:property>
+		<beans:property name="removeAbandoned" value="${parent.removeAbandoned}"></beans:property>
+		<beans:property name="removeAbandonedTimeout" value="${parent.removeAbandonedTimeout}"></beans:property>
+		<beans:property name="maxWait" value="${parent.maxWait}"></beans:property>
+		<beans:property name="validationQuery" value="${parent.validationQuery}"></beans:property>
+		<beans:property name="testOnBorrow" value="${parent.testOnBorrow}"></beans:property>
+		<beans:property name="testWhileIdle" value="${parent.testWhileIdle}"></beans:property>
+		<beans:property name="timeBetweenEvictionRunsMillis" value="${parent.timeBetweenEvictionRunsMillis}"></beans:property>
+		<beans:property name="minEvictableIdleTimeMillis" value="${parent.minEvictableIdleTimeMillis}"></beans:property>
+	</beans:bean>
+	
+	<beans:bean id="dataSourceHouseFeedbackRw" parent="parentDataSource" >
+		<beans:property name="driverClassName" value="${parent.driverClassName}"/>
+		<beans:property name="url" value="${write.jdbcUrl}"></beans:property>
+		<beans:property name="username" value="${write.user}"></beans:property>
+		<beans:property name="password" value="${write.pass}"></beans:property>
+	</beans:bean>
+	
+	<beans:bean id="dataSourceHouseFeedbackRead" parent="parentDataSource" >
+		<beans:property name="driverClassName" value="${parent.driverClassName}"/>
+		<beans:property name="url" value="${read.jdbcUrl}"></beans:property>
+		<beans:property name="username" value="${read.user}"></beans:property>
+		<beans:property name="password" value="${read.pass}"></beans:property>
+	</beans:bean>
+
+	
+	<beans:bean id="sqlSessionFactoryHouseFeedbackRw" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<beans:property name="dataSource" ref="dataSourceHouseFeedbackRw" />
+		<beans:property name="configLocation" value="classpath:conf/core/house-mybatis-config.xml" />
+		<beans:property name="mapperLocations" value="classpath:conf/mybatis/*.xml" />
+	</beans:bean>
+	
+	<beans:bean id="sqlSessionFactoryHouseFeedbackRead" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<beans:property name="dataSource" ref="dataSourceHouseFeedbackRead" />
+		<beans:property name="configLocation" value="classpath:conf/core/house-mybatis-config.xml" />
+		<beans:property name="mapperLocations" value="classpath:conf/mybatis/*.xml" />
+	</beans:bean>
+	
+	<beans:bean id="rwMapperNameGenerator" class="com.elong.house.feedback.common.CustomBeanNameGenerator">
+		<beans:property name="prefix" value="rw" />
+	</beans:bean>
+	
+	<beans:bean id="readMapperNameGenerator" class="com.elong.house.feedback.common.CustomBeanNameGenerator">
+		<beans:property name="prefix" value="read" />
+	</beans:bean>
+	
+	<beans:bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<beans:property name="basePackage" value="com.elong.house.feedback.dao" />
+		<beans:property name="nameGenerator" ref="rwMapperNameGenerator"/>
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryHouseFeedbackRw" />
+	</beans:bean>
+	
+	<beans:bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<beans:property name="basePackage" value="com.elong.house.feedback.dao" />
+		<beans:property name="nameGenerator" ref="readMapperNameGenerator" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryHouseFeedbackRead" />
+	</beans:bean>
+	
+	<!-- ***************事务配置************** -->
+	<beans:bean id="transactionManagerHouseFeedbackRw" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<beans:property name="dataSource" ref="dataSourceHouseFeedbackRw" />
+	</beans:bean>
+	<tx:advice id="txAdvice" transaction-manager="transactionManagerHouseFeedbackRw">  
+        <tx:attributes>
+            <tx:method name="save*" propagation="REQUIRED" rollback-for="Exception" />
+            <tx:method name="add*" propagation="REQUIRED" rollback-for="Exception" />
+        	<tx:method name="insert*" propagation="REQUIRED" rollback-for="Exception" />
+        	<tx:method name="update*" propagation="REQUIRED" rollback-for="Exception" /> 
+        	<tx:method name="del*" propagation="REQUIRED" rollback-for="Exception" />  
+            <tx:method name="*" read-only="true" />
+        </tx:attributes>  
+    </tx:advice>
+	<aop:config>
+        <aop:advisor pointcut="execution(* com.elong.house.feedback.service.impl.*.*(..))"  advice-ref="txAdvice" />  
+    </aop:config>  
+
+</beans:beans>

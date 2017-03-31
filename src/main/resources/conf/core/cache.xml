@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:oscache="http://www.springmodules.org/schema/oscache"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		   http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+           http://www.springmodules.org/schema/oscache http://www.springmodules.org/schema/cache/springmodules-oscache.xsd">
+
+    <context:property-placeholder location="classpath:conf/custom/env/cache.properties"
+                                  ignore-unresolvable="true"/>
+
+    <!-- cache设置相关 -->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <!--最大连接数-->
+        <!-- 		<property name="maxActive" value="${redis.config.maxactive}"/> -->
+        <!--最大空闲连接数-->
+        <property name="maxIdle" value="${redis.config.maxidle}"/>
+        <!--初始化连接数-->
+        <!-- 		<property name="minIdle" value="${redis.config.minidle}"/> -->
+        <!--最大等待时间-->
+        <!-- 		<property name="maxWait" value="${redis.config.maxwait}"/> -->
+        <!--对拿到的connection进行validateObject校验-->
+        <property name="testOnBorrow" value="${redis.config.testonborrow}"/>
+        <!--在进行returnObject对返回的connection进行validateObject校验-->
+        <property name="testOnReturn" value="${redis.config.testonreturn}"/>
+        <!--在进行returnObject对返回的connection进行validateObject校验-->
+        <property name="testWhileIdle" value="${redis.config.testWhileIdle}"/>
+    </bean>
+    <bean id="jedisPoolProxyFactory" class="com.elong.common.cache.redis.pool.PoolProxyFactory"/>
+    <bean id="normaljedisPool" factory-bean="jedisPoolProxyFactory"
+          factory-method="createPoolProxy">
+        <constructor-arg value="${redis.beanClassName}"/>
+        <constructor-arg ref="jedisPoolConfig"/>
+        <constructor-arg value="${redis.timeout}"/>
+        <constructor-arg value="${redis.host}"/>
+    </bean>
+    <!-- cache设置结束 -->
+</beans>
