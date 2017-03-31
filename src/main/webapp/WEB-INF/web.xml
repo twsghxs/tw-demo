@@ -3,7 +3,7 @@
          xmlns="http://java.sun.com/xml/ns/javaee" 
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
          id="WebApp_ID" version="3.0">
-    <display-name>house-feedback</display-name>
+    <display-name>tw-demo</display-name>
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>  
@@ -13,7 +13,7 @@
     </context-param>
     <context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath:conf/core/house-root-context.xml</param-value>
+		<param-value>classpath:conf/core/demo-db.xml</param-value>
 	</context-param>
     <!-- FILTER CONFIGURATION BEGIN -->
     <filter>
@@ -38,37 +38,19 @@
 
 	<!-- SPRING MVC CORE SERVLET CONFIGURATION BEGIN -->
 	<servlet>
-		<servlet-name>house-feedback</servlet-name>
+		<servlet-name>tw-demo</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
-			<param-value>classpath:conf/core/house-feedback-servlet.xml</param-value>
+			<param-value>classpath:conf/core/demo-servlet.xml</param-value>
 		</init-param>
-	
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>house-feedback</servlet-name>
+		<servlet-name>tw-demo</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 	<!-- SPRING MVC CORE SERVLET CONFIGURATION END -->
-	
-	<!-- HEALTHCHECK BEGIN -->
-	<servlet>
-		<servlet-name>healthcheck</servlet-name>
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-		<init-param>
-			<param-name>contextConfigLocation</param-name>
-			<param-value>classpath:conf/core/healthcheck-servlet.xml</param-value>
-		</init-param>
-		<load-on-startup>2</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>healthcheck</servlet-name>
-		<url-pattern>/hc/status.html</url-pattern>
-	</servlet-mapping>
-	<!-- HEALTHCHECK END -->
-
 
 	<!-- Spring 刷新Introspector防止内存泄露 -->
 	<listener>

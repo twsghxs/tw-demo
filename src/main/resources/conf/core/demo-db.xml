@@ -67,22 +67,22 @@
 		<beans:property name="mapperLocations" value="classpath:conf/mybatis/*.xml" />
 	</beans:bean>
 	
-	<beans:bean id="rwMapperNameGenerator" class="com.elong.house.feedback.common.CustomBeanNameGenerator">
+	<beans:bean id="rwMapperNameGenerator" class="com.tw.house.feedback.common.CustomBeanNameGenerator">
 		<beans:property name="prefix" value="rw" />
 	</beans:bean>
 	
-	<beans:bean id="readMapperNameGenerator" class="com.elong.house.feedback.common.CustomBeanNameGenerator">
+	<beans:bean id="readMapperNameGenerator" class="com.tw.house.feedback.common.CustomBeanNameGenerator">
 		<beans:property name="prefix" value="read" />
 	</beans:bean>
 	
 	<beans:bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<beans:property name="basePackage" value="com.elong.house.feedback.dao" />
+		<beans:property name="basePackage" value="com.tw.house.feedback.dao" />
 		<beans:property name="nameGenerator" ref="rwMapperNameGenerator"/>
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryHouseFeedbackRw" />
 	</beans:bean>
 	
 	<beans:bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<beans:property name="basePackage" value="com.elong.house.feedback.dao" />
+		<beans:property name="basePackage" value="com.tw.house.feedback.dao" />
 		<beans:property name="nameGenerator" ref="readMapperNameGenerator" />
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryHouseFeedbackRead" />
 	</beans:bean>
@@ -102,7 +102,7 @@
         </tx:attributes>  
     </tx:advice>
 	<aop:config>
-        <aop:advisor pointcut="execution(* com.elong.house.feedback.service.impl.*.*(..))"  advice-ref="txAdvice" />  
+        <aop:advisor pointcut="execution(* com.tw.service.impl.*.*(..))"  advice-ref="txAdvice" />  
     </aop:config>  
 
 </beans:beans>
