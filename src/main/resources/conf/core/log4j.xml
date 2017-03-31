@@ -13,7 +13,7 @@
 	</appender>
 	
 	<!-- 系统启动日志输出文件 -->
-    <appender name="fileAppender" class="com.elong.house.feedback.common.DayRollingFileAppender">
+    <appender name="fileAppender" class="com.tw.demo.utils.DayRollingFileAppender">
 		<param name="File" value="${catalina.home}/logs/system_error.log"/>
 		<param name="DatePattern" value="'.'yyyy-MM-dd"/>
 		<layout class="org.apache.log4j.PatternLayout">
@@ -24,8 +24,8 @@
 		</filter>
 	</appender>
 	<!--actionLogEntity appender -->
-	<appender name="actionLogEntityAppender" class="com.elong.common.util.log.ElongDailyRollingFileAppender">
-		<param name="File" value="${catalina.home}/logs/house-feedback_actionlogentity.log"/>
+	<appender name="actionLogEntityAppender" class="org.apache.log4j.ConsoleAppender">
+		<param name="File" value="${catalina.home}/logs/demo_actionlogentity.log"/>
 		<param name="DatePattern" value="'.'yyyy-MM-dd-HH-mm"/>
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%m%n"/>
@@ -36,8 +36,8 @@
 	</appender>
  	
  	
- 	<appender name="analysisAppender" class="com.elong.house.feedback.common.DayRollingFileAppender">
-		<param name="File" value="${catalina.home}/logs/analysis_controller.log"/>
+ 	<appender name="webAppender" class="com.tw.demo.utils.DayRollingFileAppender">
+		<param name="File" value="${catalina.home}/logs/demo_controller.log"/>
 		<param name="DatePattern" value="'.'yyyy-MM-dd"/>
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d %p [%c] - %m%n"/>
@@ -47,14 +47,10 @@
 		</filter>
 	</appender>
  	
- 	<category name="com.elong.house.feedback.web.AnalysisController" additivity="false">
+ 	<category name="com.tw.demo.web.RedisController" additivity="false">
 		<level value="INFO" />
-		<appender-ref ref="analysisAppender" />
+		<appender-ref ref="webAppender" />
 		<appender-ref ref="fileAppender" />
-	</category>
- 	
- 	<category name="healthcheck" additivity="false">
-		<level value="INFO" />
 	</category>
  	
 	<category name="actionLogEntityLogger" additivity="false">
