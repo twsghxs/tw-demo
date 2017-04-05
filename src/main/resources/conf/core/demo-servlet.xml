@@ -17,19 +17,23 @@
            http://code.alibabatech.com/schema/dubbo
        	   http://code.alibabatech.com/schema/dubbo/dubbo.xsd">	
        	   
-	<context:component-scan base-package="com.elong.house.feedback.web" />
-	<context:component-scan base-package="com.elong.house.feedback.service"></context:component-scan>
+	<context:component-scan base-package="com.tw.demo.web" />
+	<context:component-scan base-package="com.tw.demo.service" />
 		   
 	<!-- 以下一行配置为JavaDoc站点，必须保留！！！切记！！！如果更改或servlet.xml，请务必保留下行 -->
 	<mvc:annotation-driven/>
     <mvc:resources mapping="/apidocs/**" location="/apidocs/" />
     <mvc:resources mapping="/hc/**" location="/hc/" />
 	
-	<bean id="logInterceptor" class="com.elong.apartment.utils.log.LogInterceptor" />
+	<bean id="logInterceptor" class="com.tw.demo.utils.log.ActionLogAdvice" />
 	<aop:config>
-		<aop:pointcut id="si" expression="execution(public * com.elong.house.feedback.web.*.*(..))" />
+		<aop:pointcut id="si" expression="execution(public * com.tw.demo.web.*.*(..))" />
        	<aop:advisor pointcut-ref="si" advice-ref="logInterceptor"/>
     </aop:config>
+	<aop:config>
+		<aop:pointcut id="si" expression="@annotation(com.tw.demo.utils.log.ActionLog)" />
+		<aop:advisor pointcut-ref="si" advice-ref="logInterceptor" />
+	</aop:config>
     
 	<bean id="velocityConfig" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
 		<!-- 增加自定义property -->
