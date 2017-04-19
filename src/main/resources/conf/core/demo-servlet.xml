@@ -9,11 +9,11 @@
 	xmlns:oscache="http://www.springmodules.org/schema/oscache"
 	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
 	xmlns:task="http://www.springframework.org/schema/task"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-		   http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
-           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
-           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
-           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		   http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
            http://www.springmodules.org/schema/oscache http://www.springmodules.org/schema/cache/springmodules-oscache.xsd
            http://code.alibabatech.com/schema/dubbo
        	   http://code.alibabatech.com/schema/dubbo/dubbo.xsd
@@ -26,20 +26,23 @@
 	<context:component-scan base-package="com.tw.demo.service" />
 		   
 	<mvc:annotation-driven>
-		<mvc:message-converters>
-			<bean id="jsonConverter" class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
-				<property name="supportedMediaTypes" value="application/json;charset=UTF-8" />
-				<property name="features">
-					<array value-type="com.alibaba.fastjson.serializer.SerializerFeature">
-						<value>DisableCircularReferenceDetect</value>
-					</array>
-				</property>
-			</bean>
-			<bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter">
-				<property name="supportedMediaTypes" value="text/plain" />
-			</bean>
-		</mvc:message-converters>
-	</mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean id="jsonConverter"
+                  class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+                <property name="supportedMediaTypes" value="application/json;charset=UTF-8"/>
+                <property name="features">
+                    <array value-type="com.alibaba.fastjson.serializer.SerializerFeature">
+                        <value>DisableCircularReferenceDetect</value>
+                        <value>WriteDateUseDateFormat</value>
+                    </array>
+                </property>
+            </bean>
+            <bean id="stringHttpMessageConverter"
+                  class="org.springframework.http.converter.StringHttpMessageConverter">
+                <property name="supportedMediaTypes" value="text/plain"/>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
 	
     <mvc:resources mapping="/hc/**" location="/hc/" />
     <mvc:resources mapping="/image/**" location="/resources/image/" />

@@ -55,13 +55,13 @@
 	
 	<beans:bean id="sqlSessionFactoryRw" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<beans:property name="dataSource" ref="dataSourceRw" />
-		<beans:property name="configLocation" value="classpath:conf/core/house-mybatis-config.xml" />
+		<beans:property name="configLocation" value="classpath:conf/core/mybatis-config.xml" />
 		<beans:property name="mapperLocations" value="classpath:conf/mybatis/*.xml" />
 	</beans:bean>
 	
 	<beans:bean id="sqlSessionFactoryRead" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<beans:property name="dataSource" ref="dataSourceRead" />
-		<beans:property name="configLocation" value="classpath:conf/core/house-mybatis-config.xml" />
+		<beans:property name="configLocation" value="classpath:conf/core/mybatis-config.xml" />
 		<beans:property name="mapperLocations" value="classpath:conf/mybatis/*.xml" />
 	</beans:bean>
 	

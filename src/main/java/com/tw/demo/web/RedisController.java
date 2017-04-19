@@ -15,7 +15,7 @@ import com.tw.demo.service.RedisService;
 
 
 @Controller
-@RequestMapping("feedback/redis")
+@RequestMapping("demo/redis")
 public class RedisController {
 	private static final Logger logger = LoggerFactory.getLogger(RedisController.class);
 	@Resource
