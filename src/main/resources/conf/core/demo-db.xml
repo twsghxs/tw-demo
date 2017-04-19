@@ -18,11 +18,9 @@
     	>
    
 	<context:annotation-config />
-	<!-- For parsing classes with @Aspect annotation  proxy-target-class=true-->
 	<aop:aspectj-autoproxy />
 
 	<context:property-placeholder  location="classpath:conf/custom/env/jdbc.properties" ignore-unresolvable="true" /> 
-	
 	
 	<beans:bean id="parentDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<beans:property name="initialSize" value="${parent.initialSize}"></beans:property>
@@ -40,14 +38,14 @@
 		<beans:property name="minEvictableIdleTimeMillis" value="${parent.minEvictableIdleTimeMillis}"></beans:property>
 	</beans:bean>
 	
-	<beans:bean id="dataSourceHouseFeedbackRw" parent="parentDataSource" >
+	<beans:bean id="dataSourceRw" parent="parentDataSource" >
 		<beans:property name="driverClassName" value="${parent.driverClassName}"/>
 		<beans:property name="url" value="${write.jdbcUrl}"></beans:property>
 		<beans:property name="username" value="${write.user}"></beans:property>
 		<beans:property name="password" value="${write.pass}"></beans:property>
 	</beans:bean>
 	
-	<beans:bean id="dataSourceHouseFeedbackRead" parent="parentDataSource" >
+	<beans:bean id="dataSourceRead" parent="parentDataSource" >
 		<beans:property name="driverClassName" value="${parent.driverClassName}"/>
 		<beans:property name="url" value="${read.jdbcUrl}"></beans:property>
 		<beans:property name="username" value="${read.user}"></beans:property>
@@ -55,43 +53,46 @@
 	</beans:bean>
 
 	
-	<beans:bean id="sqlSessionFactoryHouseFeedbackRw" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<beans:property name="dataSource" ref="dataSourceHouseFeedbackRw" />
+	<beans:bean id="sqlSessionFactoryRw" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<beans:property name="dataSource" ref="dataSourceRw" />
 		<beans:property name="configLocation" value="classpath:conf/core/house-mybatis-config.xml" />
 		<beans:property name="mapperLocations" value="classpath:conf/mybatis/*.xml" />
 	</beans:bean>
 	
-	<beans:bean id="sqlSessionFactoryHouseFeedbackRead" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<beans:property name="dataSource" ref="dataSourceHouseFeedbackRead" />
+	<beans:bean id="sqlSessionFactoryRead" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<beans:property name="dataSource" ref="dataSourceRead" />
 		<beans:property name="configLocation" value="classpath:conf/core/house-mybatis-config.xml" />
 		<beans:property name="mapperLocations" value="classpath:conf/mybatis/*.xml" />
 	</beans:bean>
 	
-	<beans:bean id="rwMapperNameGenerator" class="com.tw.house.feedback.common.CustomBeanNameGenerator">
+	<beans:bean id="rwMapperNameGenerator" class="com.tw.demo.utils.CustomBeanNameGenerator">
 		<beans:property name="prefix" value="rw" />
 	</beans:bean>
 	
-	<beans:bean id="readMapperNameGenerator" class="com.tw.house.feedback.common.CustomBeanNameGenerator">
+	<beans:bean id="readMapperNameGenerator" class="com.tw.demo.utils.CustomBeanNameGenerator">
 		<beans:property name="prefix" value="read" />
 	</beans:bean>
 	
 	<beans:bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<beans:property name="basePackage" value="com.tw.house.feedback.dao" />
+		<beans:property name="basePackage" value="com.tw.demo.dao" />
 		<beans:property name="nameGenerator" ref="rwMapperNameGenerator"/>
-		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryHouseFeedbackRw" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryRw" />
 	</beans:bean>
 	
 	<beans:bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<beans:property name="basePackage" value="com.tw.house.feedback.dao" />
+		<beans:property name="basePackage" value="com.tw.demo.dao" />
 		<beans:property name="nameGenerator" ref="readMapperNameGenerator" />
-		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryHouseFeedbackRead" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryRead" />
 	</beans:bean>
 	
 	<!-- ***************事务配置************** -->
-	<beans:bean id="transactionManagerHouseFeedbackRw" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<beans:property name="dataSource" ref="dataSourceHouseFeedbackRw" />
+	<beans:bean id="transactionManagerRw" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<beans:property name="dataSource" ref="dataSourceRw" />
 	</beans:bean>
-	<tx:advice id="txAdvice" transaction-manager="transactionManagerHouseFeedbackRw">  
+	<!-- @Transactional(value = "transactionManagerRw", rollbackFor = Exception.class) -->
+	<tx:annotation-driven transaction-manager="transactionManagerRw" />
+	
+	<tx:advice id="txAdvice" transaction-manager="transactionManagerRw">  
         <tx:attributes>
             <tx:method name="save*" propagation="REQUIRED" rollback-for="Exception" />
             <tx:method name="add*" propagation="REQUIRED" rollback-for="Exception" />
@@ -102,7 +103,7 @@
         </tx:attributes>  
     </tx:advice>
 	<aop:config>
-        <aop:advisor pointcut="execution(* com.tw.service.impl.*.*(..))"  advice-ref="txAdvice" />  
-    </aop:config>  
+        <aop:advisor pointcut="execution(* com.tw.demo.service.*.*(..))"  advice-ref="txAdvice" />  
+    </aop:config>
 
 </beans:beans>

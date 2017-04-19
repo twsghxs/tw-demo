@@ -13,7 +13,7 @@ import org.springframework.beans.factory.support.DefaultBeanNameGenerator;
  *
  */
 public class CustomBeanNameGenerator extends DefaultBeanNameGenerator{
-	private static final Logger logger=LoggerFactory.getLogger(CustomBeanNameGenerator.class);
+	private static final Logger logger = LoggerFactory.getLogger(CustomBeanNameGenerator.class);
 	private String prefix;
 	
 	public String getPrefix() {
@@ -25,11 +25,11 @@ public class CustomBeanNameGenerator extends DefaultBeanNameGenerator{
 	}
 
 	public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
-		try{
-			String className=definition.getBeanClassName();
-			className=className.substring(className.lastIndexOf(".")+1); 
-			return prefix+className;
-		}catch(Throwable ex){
+		try {
+			String className = definition.getBeanClassName();
+			className = className.substring(className.lastIndexOf(".") + 1);
+			return prefix + className;
+		} catch (Throwable ex) {
 			logger.error("error", ex);
 		}
 		return definition.getBeanClassName();

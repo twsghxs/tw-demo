@@ -10,7 +10,6 @@
   	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<springframework.version>3.2.3.RELEASE</springframework.version>
 	</properties>
   	
   	<build>
@@ -82,7 +81,7 @@
 	    <dependency>
 	      <groupId>org.springframework</groupId>
 	      <artifactId>spring-webmvc</artifactId>
-	      <version>${springframework.version}</version>
+	      <version>3.2.3.RELEASE</version>
 	    </dependency>
 	     <dependency>
 	      <groupId>org.mybatis</groupId>

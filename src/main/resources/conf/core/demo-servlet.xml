@@ -8,6 +8,7 @@
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:oscache="http://www.springmodules.org/schema/oscache"
 	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 		   http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
@@ -15,15 +16,35 @@
            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
            http://www.springmodules.org/schema/oscache http://www.springmodules.org/schema/cache/springmodules-oscache.xsd
            http://code.alibabatech.com/schema/dubbo
-       	   http://code.alibabatech.com/schema/dubbo/dubbo.xsd">	
-       	   
+       	   http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+       	   http://www.springframework.org/schema/task 
+		   http://www.springframework.org/schema/task/spring-task-3.2.xsd">
+    
+    <task:annotation-driven />
+    
 	<context:component-scan base-package="com.tw.demo.web" />
 	<context:component-scan base-package="com.tw.demo.service" />
 		   
-	<!-- 以下一行配置为JavaDoc站点，必须保留！！！切记！！！如果更改或servlet.xml，请务必保留下行 -->
-	<mvc:annotation-driven/>
-    <mvc:resources mapping="/apidocs/**" location="/apidocs/" />
+	<mvc:annotation-driven>
+		<mvc:message-converters>
+			<bean id="jsonConverter" class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+				<property name="supportedMediaTypes" value="application/json;charset=UTF-8" />
+				<property name="features">
+					<array value-type="com.alibaba.fastjson.serializer.SerializerFeature">
+						<value>DisableCircularReferenceDetect</value>
+					</array>
+				</property>
+			</bean>
+			<bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter">
+				<property name="supportedMediaTypes" value="text/plain" />
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+	
     <mvc:resources mapping="/hc/**" location="/hc/" />
+    <mvc:resources mapping="/image/**" location="/resources/image/" />
+    <mvc:resources mapping="/js/**" location="/resources/js/" />
+    <mvc:resources mapping="/css/**" location="/resources/css/" />
 	
 	<bean id="logInterceptor" class="com.tw.demo.utils.log.ActionLogAdvice" />
 	<aop:config>
@@ -51,5 +72,11 @@
 		<property name="suffix" value=".vm" />
 		<property name="requestContextAttribute" value="rc" />
 	</bean>
+	
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="maxUploadSize" value="10485760000"/>
+        <property name="maxInMemorySize" value="40960"/>
+    </bean>
 	
 </beans>
