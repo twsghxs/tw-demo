@@ -4,8 +4,6 @@ import com.alibaba.fastjson.JSON;
 
 /**
  * 自定义HTTP状态
- * 
- * @author bing.cheng
  *
  */
 public enum HttpResultStatus {
