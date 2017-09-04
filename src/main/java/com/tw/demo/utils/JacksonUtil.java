@@ -83,5 +83,31 @@ public class JacksonUtil {
         }
         return null;
     }
+    
+    
+    /**
+   * @JsonSerialize(using = ListJsonSerializer.class)
+   */
+  public static class ListJsonSerializer extends JsonSerializer<String> {
+    public void serialize(String value, JsonGenerator gen, SerializerProvider ser) throws IOException, JsonProcessingException {
+      List list = JacksonUtil.readValue(value, List.class);
+      gen.writeObject(list);
+    }
+  }
+
+  /**
+   * @JsonDeserialize(using = ListJsonDeserializer.class)
+   */
+  public static class ListJsonDeserializer extends JsonDeserializer<String> {
+    public String deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+      try {
+        List list = p.readValueAs(List.class);
+        return JacksonUtil.writeValue(list);
+      } catch (Exception e) {
+        return null;
+      }
+    }
+  }
+    
 
 }
